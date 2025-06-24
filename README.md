@@ -1,5 +1,5 @@
 # ZeldaWindWakerTrainer-for-CEMU
-A simple trainer built for fun for The Legend Of Zelda Wind Waker HD running on Cemu
+A simple trainer built for fun for The Legend Of Zelda Wind Waker HD running on Cemu.
 
 Tested on Cemu 2.6 (2025-06-10)
 Title : Zelda Wind Waker HD (US v0) (BCZE01) [0005000-10143500]
