@@ -17,10 +17,10 @@ jobs:
     - name: Depoyu Çıkart # GitHub deposunu sanal makineye klonlar.
       uses: actions/checkout@v4
 
-    - name: .NET Core 3.0 Kurulumu # .NET Core SDK'sını kurar. Trainer .NET Core 3.0 gerektirir.
+    - name: .NET 8.x Kurulumu # Projenin net8.0-windows üzerinde derlendiği anlaşıldığından, .NET SDK'sını 8.x olarak kurarız.
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '3.0.x' # İstenen .NET Core 3.x sürümünü belirtir.
+        dotnet-version: '8.x' # İstenen .NET 8.x sürümünü belirtir.
 
     - name: Visual C++ Redistributable 2015 Kurulumu # Visual C++ Redistributable 2015'i Chocolatey ile kurar.
       # Chocolatey, Windows için popüler bir paket yöneticisidir ve güvenilir yazılım kurulumu sağlar.
@@ -37,5 +37,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: ZeldaWindWakerTrainer # Yüklenecek ZIP dosyasının adı
-        # Derlenmiş uygulamanın yolu. Proje alt dizinde olduğu için yolu buna göre güncelledik.
-        path: ZeldaWindWakerTrainer/bin/Release/netcoreapp3.0/
+        # Derlenmiş uygulamanın gerçek çıktı yolu net8.0-windows olduğundan, yolu buna göre güncelledik.
+        path: ZeldaWindWakerTrainer/bin/Release/net8.0-windows/
