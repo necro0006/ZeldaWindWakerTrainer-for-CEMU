@@ -22,21 +22,23 @@ jobs:
         dotnet-version: '3.0.x' # İstenen .NET Core 3.x sürümünü belirtir.
 
     - name: Visual C++ Redistributable 2015 Kurulumu # Visual C++ Redistributable 2015'i indirip sessizce kurar.
-      shell: powershell # Bu adım için PowerShell kabuğunu kullanırız.
+      # Curl, Windows'ta Invoke-WebRequest'ten daha güvenilir bir dosya indirme aracıdır.
+      # '-L' yönlendirmeleri takip etmeyi sağlar, '-o' ise çıktı dosya adını belirtir.
       run: |
-        # Visual C++ 2015 Redistributable x64 sürümünü Microsoft'un CDN'inden indirir.
-        # Bu URL, uygulamanın gerektirdiği x64 sürümü için genellikle doğru olandır.
-        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/D/F/6DF945B0-1DE8-4EC1-8EE6-0D7D76B17366/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
+        curl -L -o vc_redist.x64.exe "https://download.microsoft.com/download/6/D/F/6DF945B0-1DE8-4EC1-8EE6-0D7D76B17366/vc_redist.x64.exe"
         
         # İndirilen kurulum dosyasını sessizce (/quiet) ve kullanıcı etkileşimi olmadan (/install) çalıştırır.
         # Kurulum sonrası sistemi yeniden başlatmaz (/norestart).
         Start-Process -Wait -FilePath "vc_redist.x64.exe" -ArgumentList "/install /quiet /norestart"
 
     - name: Çözümü Derle # Projeyi "Release" yapılandırmasında derler.
-      run: dotnet build --configuration Release
+      # Proje kök dizinde değil, 'ZeldaWindWakerTrainer' alt dizininde olduğundan,
+      # dotnet komutuna bu dizini belirtmemiz gerekir.
+      run: dotnet build ZeldaWindWakerTrainer/ZeldaWindWakerTrainer.csproj --configuration Release
 
     - name: Derlenenleri Yükle # Derlenen çıktı dosyalarını (artifacts) bir ZIP dosyası olarak yükler.
       uses: actions/upload-artifact@v4
       with:
         name: ZeldaWindWakerTrainer # Yüklenecek ZIP dosyasının adı
-        path: bin/Release/netcoreapp3.0/ # Derlenmiş uygulamanın yolu. Bu, projenin varsayılan .NET Core 3.0 çıkış yoludur.
+        # Derlenmiş uygulamanın yolu. Proje alt dizinde olduğu için yolu buna göre güncelledik.
+        path: ZeldaWindWakerTrainer/bin/Release/netcoreapp3.0/
