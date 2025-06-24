@@ -1,0 +1,42 @@
+name: Build ZeldaWindWakerTrainer # İş akışının adı
+
+on:
+  push:
+    branches:
+      - main # main dalına yapılan her "push" işleminde çalıştır.
+  pull_request:
+    branches:
+      - main # main dalına yapılan her "pull request" işleminde çalıştır.
+
+jobs:
+  build:
+    runs-on: windows-latest # Bu trainer bir Windows uygulaması olduğundan, derleme için Windows ortamı kullanırız.
+
+    steps:
+    - name: Depoyu Çıkart # GitHub deposunu sanal makineye klonlar.
+      uses: actions/checkout@v4
+
+    - name: .NET Core 3.0 Kurulumu # .NET Core SDK'sını kurar. Trainer .NET Core 3.0 gerektirir.
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '3.0.x' # İstenen .NET Core 3.x sürümünü belirtir.
+
+    - name: Visual C++ Redistributable 2015 Kurulumu # Visual C++ Redistributable 2015'i indirip sessizce kurar.
+      shell: powershell # Bu adım için PowerShell kabuğunu kullanırız.
+      run: |
+        # Visual C++ 2015 Redistributable x64 sürümünü Microsoft'un CDN'inden indirir.
+        # Bu URL, uygulamanın gerektirdiği x64 sürümü için genellikle doğru olandır.
+        Invoke-WebRequest -Uri "https://download.microsoft.com/download/6/D/F/6DF945B0-1DE8-4EC1-8EE6-0D7D76B17366/vc_redist.x64.exe" -OutFile "vc_redist.x64.exe"
+        
+        # İndirilen kurulum dosyasını sessizce (/quiet) ve kullanıcı etkileşimi olmadan (/install) çalıştırır.
+        # Kurulum sonrası sistemi yeniden başlatmaz (/norestart).
+        Start-Process -Wait -FilePath "vc_redist.x64.exe" -ArgumentList "/install /quiet /norestart"
+
+    - name: Çözümü Derle # Projeyi "Release" yapılandırmasında derler.
+      run: dotnet build --configuration Release
+
+    - name: Derlenenleri Yükle # Derlenen çıktı dosyalarını (artifacts) bir ZIP dosyası olarak yükler.
+      uses: actions/upload-artifact@v4
+      with:
+        name: ZeldaWindWakerTrainer # Yüklenecek ZIP dosyasının adı
+        path: bin/Release/netcoreapp3.0/ # Derlenmiş uygulamanın yolu. Bu, projenin varsayılan .NET Core 3.0 çıkış yoludur.
