@@ -22,15 +22,11 @@ jobs:
       with:
         dotnet-version: '3.0.x' # İstenen .NET Core 3.x sürümünü belirtir.
 
-    - name: Visual C++ Redistributable 2015 Kurulumu # Visual C++ Redistributable 2015'i indirip sessizce kurar.
-      # Curl, Windows'ta Invoke-WebRequest'ten daha güvenilir bir dosya indirme aracıdır.
-      # '-L' yönlendirmeleri takip etmeyi sağlar, '-o' ise çıktı dosya adını belirtir.
+    - name: Visual C++ Redistributable 2015 Kurulumu # Visual C++ Redistributable 2015'i Chocolatey ile kurar.
+      # Chocolatey, Windows için popüler bir paket yöneticisidir ve güvenilir yazılım kurulumu sağlar.
       run: |
-        curl -L -o vc_redist.x64.exe "https://download.microsoft.com/download/6/D/F/6DF945B0-1DE8-4EC1-8EE6-0D7D76B17366/vc_redist.x64.exe"
-        
-        # İndirilen kurulum dosyasını sessizce (/quiet) ve kullanıcı etkileşimi olmadan (/install) çalıştırır.
-        # Kurulum sonrası sistemi yeniden başlatmaz (/norestart).
-        Start-Process -Wait -FilePath "vc_redist.x64.exe" -ArgumentList "/install /quiet /norestart"
+        choco install vcredist2015 -y
+      # -y parametresi, Chocolatey'nin onay istemeden kurulum yapmasını sağlar.
 
     - name: Çözümü Derle # Projeyi "Release" yapılandırmasında derler.
       # Proje kök dizinde değil, 'ZeldaWindWakerTrainer' alt dizininde olduğundan,
