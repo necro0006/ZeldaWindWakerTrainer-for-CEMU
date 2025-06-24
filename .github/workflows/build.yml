@@ -7,6 +7,7 @@ on:
   pull_request:
     branches:
       - main # main dalına yapılan her "pull request" işleminde çalıştır.
+  workflow_dispatch: # Bu satır, iş akışını GitHub UI üzerinden manuel olarak tetikleme yeteneği ekler.
 
 jobs:
   build:
